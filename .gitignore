@@ -1,6 +1,9 @@
 *.swp
 *.com
 *.img
+*.rom
 *.COM
 *.IMG
+*.ROM
+romfix
 *.png

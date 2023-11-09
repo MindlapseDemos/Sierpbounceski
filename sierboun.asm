@@ -44,13 +44,32 @@ SIERP_VERTS equ code_end + 8
 
 
 start:
+%ifdef ROM
+	dw 0aa55h
+	db 10h		; length in 512-byte blocks (8k)
+	mov ax, cs
+	test ax, ax
+	jz .skipcopy
+	mov ds, ax
+	xor ax, ax
+	mov es, ax
+	mov si, ax
+	mov di, 7c00h
+	mov cx, 256
+	rep movsw
+	jmp 0:7c03h
+.skipcopy:
+%endif
 %ifdef BOOTSECT
 	xor ax, ax
 	mov ds, ax
 	mov es, ax
-	mov ss, ax
 	jmp 00:.setcs
-.setcs: xor sp, sp
+.setcs:
+%ifndef ROM
+	mov ss, ax
+	xor sp, sp
+%endif
 %endif
 	mov al, 13h
 	int 10h
@@ -124,7 +143,14 @@ mainloop:
 	pop es
 	pop ds
 
-%ifdef BOOTSECT
+%ifndef BOOTSECT
+%define ESCQUIT
+%endif
+%ifdef ROM
+%define ESCQUIT
+%endif
+
+%ifndef ESCQUIT
 	jmp mainloop
 %else
 	in al, 60h	; read pending scancode from the keyboard port (if any)
@@ -134,8 +160,11 @@ mainloop:
 	; switch back to text mode (mode 3)
 	mov ax, 3
 	int 10h
-	; return to dos
-	ret
+%ifdef ROM
+	retf	; return to BIOS POST
+%else
+	ret	; return to dos
+%endif
 %endif
 
 	; draw sierpinski triangle
