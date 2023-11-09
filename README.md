@@ -1,6 +1,7 @@
 Sierpbounceski / Mindlapse
 ==========================
-A bouncy sierpinski fractal in 253 bytes.
+A bouncy sierpinski fractal in 253 bytes, which came 6th at the Revision 2020
+256 byte intro competition.
 
 Author: John Tsiombikas (Nuclear / Mindlapse) <nuclear@member.fsf.org>
 
